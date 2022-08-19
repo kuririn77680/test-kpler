@@ -9,15 +9,15 @@ vessel_position_creation_schema = VesselPositionCreationSchema()
 
 
 @vp_bp.route("", methods=["GET"])
-def get_all_vessel_posistion():
+def get_all_vessel_position():
     all_vessel_position = VesselPosition.query.all()
     return jsonify(vessel_position_schema.dump(all_vessel_position, many=True)), 200
 
 
 @vp_bp.route("/<vessel_id>", methods=["GET"])
-def get_vessel_posistion(vessel_id):
+def get_vessel_position(vessel_id):
     vessel_position = VesselPosition.query.filter_by(vessel_id=vessel_id).all()
-    return jsonify(vessel_position_schema.dump(vessel_position, many=True))
+    return jsonify(vessel_position_schema.dump(vessel_position, many=True)), 200
 
 
 @vp_bp.route("/add_vessel_position", methods=["POST"])
@@ -34,4 +34,4 @@ def add_vessel_position():
         return Response(status=201)
 
     else:
-        return jsonify({"message": "the association vessel_id:received_time_utc already have an entry"})
+        return jsonify({"message": "the association vessel_id:received_time_utc already have an entry"}), 400

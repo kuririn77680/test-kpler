@@ -9,10 +9,14 @@ class VesselPositionCreationSchema(Schema):
     longitude = fields.Float(required=True)
 
     @validates("latitude")
+    def validate_coordinate(self, value):
+        if value <= -180.00 or value >= 180.00:
+            raise ValidationError("Latitude must be defined between -180.00 and +180.00")
+
     @validates("longitude")
     def validate_coordinate(self, value):
         if value <= -180.00 or value >= 180.00:
-            raise ValidationError("Latitude or longitude must be defined between -180.00 and +180.00")
+            raise ValidationError("longitude must be defined between -180.00 and +180.00")
 
 
     @post_load

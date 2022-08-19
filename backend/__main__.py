@@ -3,9 +3,9 @@ from backend import create_app
 from flask import request, jsonify, Response
 import os
 from werkzeug.utils import secure_filename
-from backend.models.vessel_position import VesselPosition
 from backend.extensions import db
 from backend.routes.vessel_positions import VesselPositionCreationSchema
+from backend.models.vessel_position import VesselPosition
 
 app = create_app()
 
@@ -23,19 +23,34 @@ def upload_file():
         csvreader = csv.reader(file)
         header = next(csvreader)
 
+        line = 2
+        failed_line = []
         for row in csvreader:
-            data = {"vessel_id": row[0],
+            try:
+                data = {"vessel_id": row[0],
                     "received_time_utc": row[1],
                     "latitude": row[2],
                     "longitude": row[3]}
 
-            new_vessel_position = vessel_position_creation_schema.load(data)
+                new_vessel_position = vessel_position_creation_schema.load(data)
 
-            db.session.add(new_vessel_position)
-            db.session.commit()
+                if VesselPosition.query.filter_by(vessel_id=data["vessel_id"],
+                                                  received_time_utc=data["received_time_utc"]) is None:
+                    db.session.add(new_vessel_position)
 
+            except:
+                failed_line.append(line)
+
+            line += 1
+
+        db.session.commit()
         file.close()
-    return Response(status=204)
+
+    if len(failed_line) > 0:
+        message = "error format data on line: " + str(failed_line)
+        return jsonify({"message": message}), 201
+    else:
+        return Response(status=201)
 
 
 if __name__ == "__main__":

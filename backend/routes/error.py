@@ -14,8 +14,8 @@ def handle_not_found(err):
 
 @error_bp.app_errorhandler(ValidationError)
 def handle_invalid_data(error):
-    print(traceback.format_exc())
-    return jsonify({"message": "Incorrect format data"}), 400
+    return jsonify({"message": "Incorrect format data",
+                    "traceback": traceback.format_exc()}), 400
 
 
 @error_bp.app_errorhandler(Exception)

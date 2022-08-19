@@ -30,14 +30,15 @@ def upload_file():
         for row in csvreader:
             try:
                 data = {"vessel_id": row[0],
-                    "received_time_utc": row[1],
-                    "latitude": row[2],
-                    "longitude": row[3]}
+                        "received_time_utc": row[1],
+                        "latitude": row[2],
+                        "longitude": row[3]}
 
                 new_vessel_position = vessel_position_creation_schema.load(data)
 
-                if VesselPosition.query.filter_by(vessel_id=data["vessel_id"],
-                                                  received_time_utc=data["received_time_utc"]) is None:
+                vessel_positions = VesselPosition.query.filter_by(vessel_id=new_vessel_position.vessel_id,
+                                                   received_time_utc=new_vessel_position.received_time_utc).all()
+                if not vessel_positions:
                     db.session.add(new_vessel_position)
                 else:
                     existing_entry.append(line)

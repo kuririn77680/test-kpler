@@ -16,20 +16,22 @@ def get_all_vessel_posistion():
 
 @vp_bp.route("/<vessel_id>", methods=["GET"])
 def get_vessel_posistion(vessel_id):
-    vessel_position = VesselPosition.query.filter_by(vessel_id=vessel_id)
-    return jsonify(vessel_position_schema.dump(vessel_position, many=True)), 200
+    vessel_position = VesselPosition.query.filter_by(vessel_id=vessel_id).all()
+    return jsonify(vessel_position_schema.dump(vessel_position, many=True))
 
 
 @vp_bp.route("/add_vessel_position", methods=["POST"])
 def add_vessel_position():
     data = request.json
-    if VesselPosition.query.filter_by(vessel_id=data["vessel_id"], received_time_utc=data["received_time_utc"]) is None:
-        new_vessel_position = vessel_position_creation_schema.load(data)
+    new_vessel_position = vessel_position_creation_schema.load(data)
 
+    vessel_positions = VesselPosition.query.filter_by(vessel_id=new_vessel_position.vessel_id,
+                                                      received_time_utc=new_vessel_position.received_time_utc).all()
+    if not vessel_positions:
         db.session.add(new_vessel_position)
         db.session.commit()
 
         return Response(status=201)
 
     else:
-        return jsonify({"message": "this vessel already have a position at this moment"}), 200
+        return jsonify({"message": "the association vessel_id:received_time_utc already have an entry"})

@@ -17,14 +17,16 @@ vessel_position_creation_schema = VesselPositionCreationSchema()
 def upload_file():
     if request.method == "POST":
         file = request.files["csvfile"]
-        file.save(os.path.join(upload_dir, secure_filename(file.filename)))
+        filename = file.filename
+        file.save(os.path.join(upload_dir, secure_filename(filename)))
 
-        file = open(os.path.join(upload_dir, secure_filename(file.filename)), "r")
+        file = open(os.path.join(upload_dir, secure_filename(filename)), "r")
         csvreader = csv.reader(file)
         header = next(csvreader)
 
         line = 2
         failed_line = []
+        existing_entry = []
         for row in csvreader:
             try:
                 data = {"vessel_id": row[0],
@@ -37,6 +39,8 @@ def upload_file():
                 if VesselPosition.query.filter_by(vessel_id=data["vessel_id"],
                                                   received_time_utc=data["received_time_utc"]) is None:
                     db.session.add(new_vessel_position)
+                else:
+                    existing_entry.append(line)
 
             except:
                 failed_line.append(line)
@@ -45,11 +49,21 @@ def upload_file():
 
         db.session.commit()
         file.close()
-        os.remove(os.path.join(upload_dir, secure_filename(file.filename)))
+        os.remove(upload_dir + "/" + secure_filename(filename))
 
-    if len(failed_line) > 0:
+    if len(failed_line) > 0 and len(existing_entry):
+        message = "error format data on line: " + str(failed_line) + "\n " \
+                    "error already existing entry on line " + str(existing_entry)
+        return jsonify({"message": message}), 201
+
+    elif len(existing_entry) > 0:
+        message = "error already existing entry on line " + str(existing_entry)
+        return jsonify({"message": message}), 201
+
+    elif len(failed_line) > 0:
         message = "error format data on line: " + str(failed_line)
         return jsonify({"message": message}), 201
+
     else:
         return Response(status=201)
 

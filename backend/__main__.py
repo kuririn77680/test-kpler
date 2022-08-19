@@ -45,6 +45,7 @@ def upload_file():
 
         db.session.commit()
         file.close()
+        os.remove(os.path.join(upload_dir, secure_filename(file.filename)))
 
     if len(failed_line) > 0:
         message = "error format data on line: " + str(failed_line)

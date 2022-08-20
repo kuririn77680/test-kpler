@@ -1,4 +1,4 @@
-import io
+import os
 from datetime import datetime
 
 from flask import url_for
@@ -36,8 +36,8 @@ def test_get_vessel_position(app_with_data):
         assert vessel_position.longitude == -67.3456
 
 
-def test_add_vessel_position(app_with_db):
-    response = app_with_db.post(url_for("vessel_positions.add_vessel_position"),
+def test_add_vessel_position(app_with_data):
+    response = app_with_data.post(url_for("vessel_positions.add_vessel_position"),
                                 json={
                                     "vessel_id": 12345,
                                     "received_time_utc": "2016-12-21 12:09:04.000000",
@@ -55,3 +55,19 @@ def test_add_vessel_position(app_with_db):
         assert vessel_position.received_time_utc == datetime(2016, 12, 21, 12, 9, 4)
         assert vessel_position.latitude == 70.8765
         assert vessel_position.longitude == 12.09894
+
+
+def test_upload_vessel_position_csv(app_with_data):
+    dirname = os.path.dirname(os.path.dirname(__file__))
+    upload_dir = os.path.join(dirname, 'data_test/')
+
+    files = {'csvfile': open(upload_dir + 'test_data_sample.csv', 'rb')}
+
+    response = app_with_data.post(url_for("vessel_positions.upload_csv"), data=files)
+
+    assert response.status_code == 201
+    assert response.json == {'message': 'error format data on line: [5, 6, 7, 8]\n error already existing entry on line [3]'}
+    vessel_positions = VesselPosition.query.all()
+    count = len(vessel_positions)
+
+    assert count == 5

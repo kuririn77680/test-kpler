@@ -7,7 +7,7 @@ from backend.models.vessel_position import VesselPosition
 
 @pytest.fixture(scope="session")
 def flask_app():
-    app = create_app()
+    app = create_app("test")
 
     client = app.test_client()
 

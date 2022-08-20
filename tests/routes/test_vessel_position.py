@@ -1,3 +1,4 @@
+import io
 from datetime import datetime
 
 from flask import url_for
@@ -54,4 +55,3 @@ def test_add_vessel_position(app_with_db):
         assert vessel_position.received_time_utc == datetime(2016, 12, 21, 12, 9, 4)
         assert vessel_position.latitude == 70.8765
         assert vessel_position.longitude == 12.09894
-

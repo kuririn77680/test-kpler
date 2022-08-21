@@ -67,12 +67,10 @@ function postData() {
             if (xhr.status == 201) {
                 alert('data added');
             }
-            else if (xhr.status == 400) {
-                alert('ok');
-            }
-            else {
-                alert('ok');
-            }
+        },
+        error: function(xhr, status, error) {
+            var err = JSON.parse(xhr.responseText);
+            alert(err.message);
         }
     })
 }

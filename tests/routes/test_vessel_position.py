@@ -66,7 +66,7 @@ def test_upload_vessel_position_csv(app_with_data):
     response = app_with_data.post(url_for("vessel_positions.upload_csv"), data=files)
 
     assert response.status_code == 201
-    assert response.json == {'message': 'error format data on line: [5, 6, 7, 8]\n error already existing entry on line [3]'}
+    assert response.json == {'message': 'error format data on line: [4, 6, 7, 8, 9]\n error already existing entry on line [3]'}
     vessel_positions = VesselPosition.query.all()
     count = len(vessel_positions)
 

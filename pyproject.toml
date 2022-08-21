@@ -11,6 +11,8 @@ Flask-SQLAlchemy = "^2.5.1"
 psycopg2-binary = "^2.9.3"
 marshmallow-sqlalchemy = "^0.28.1"
 Werkzeug = "^2.2.2"
+numpy = "^1.23.2"
+global-land-mask = "^1.0.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"

@@ -9,7 +9,8 @@ error_bp = Blueprint("errors", __name__)
 
 @error_bp.app_errorhandler(NotFound)
 def handle_not_found(err):
-    return jsonify({"message": "Ressource not founded"}), 404
+    return jsonify({"message": "Ressource not founded",
+                   "traceback": traceback.format_exc()}), 404
 
 
 @error_bp.app_errorhandler(ValidationError)

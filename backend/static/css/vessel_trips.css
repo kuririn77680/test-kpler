@@ -1,0 +1,35 @@
+#title {
+    top: 5%;
+    left: 5%;
+    position: absolute;
+    display:block;
+}
+
+#vessel_search {
+    top: 5%;
+    left: 70%;
+    position: absolute;
+    display:block;
+}
+
+#map {
+    top: 10%;
+    position: absolute;
+    height: 70%;
+    width: 95%;
+    display:block;
+}
+
+#form {
+    top: 80%;
+    left: 5%;
+    position: absolute;
+    display:block;
+}
+
+#upload {
+    top: 80%;
+    left: 50%;
+    position: absolute;
+    display:block;
+}

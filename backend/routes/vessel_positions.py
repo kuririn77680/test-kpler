@@ -1,7 +1,7 @@
 import csv
 import os
 
-from flask import Blueprint, jsonify, request, Response, app
+from flask import Blueprint, jsonify, request, Response, render_template
 from backend.models.vessel_position import VesselPosition, VesselPositionSchema
 from backend.extensions import db
 from backend.dto.vessel_position import VesselPositionCreationSchema

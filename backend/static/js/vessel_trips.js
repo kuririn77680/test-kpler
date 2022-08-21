@@ -1,7 +1,7 @@
 // Initialize and add the map
 function initMap(vessel_id) {
   const map = new google.maps.Map(document.getElementById("map"), {
-    zoom: 1.5,
+    zoom: 2,
     center: { lat: 0, lng: 0 },
   });
 
@@ -25,6 +25,8 @@ function initMap(vessel_id) {
                 vessel_positions[element.vessel_id].push(element);
             }
 
+            var infowindow = new google.maps.InfoWindow();
+
             for (vessel_position in vessel_positions) {
                 for (vessel_position_entry in vessel_positions[vessel_position]) {
                     var position = { lat: parseFloat(vessel_positions[vessel_position][vessel_position_entry].latitude),
@@ -33,7 +35,17 @@ function initMap(vessel_id) {
                     var marker = new google.maps.Marker({
                         position: position,
                         map: map,
+                        data: "Vessel ID: " + String(vessel_positions[vessel_position][vessel_position_entry].vessel_id) +
+                        "\n Received time UTC: " + String(vessel_positions[vessel_position][vessel_position_entry].received_time_utc),
                     });
+
+                    google.maps.event.addListener(marker, 'click', (function (marker) {
+                        return function () {
+                            infowindow.setContent(marker.data);
+                            infowindow.open(map, marker);
+                        }
+                    })(marker));
+
                 }
             }
         }
@@ -87,7 +99,7 @@ function uploadDataCsv() {
         url: url,
         type: "POST",
         data:formData,
-        processData: false,  // tell jQuery not to process the data
+        processData: false,
         contentType: false,
         success: function(result, textStatus, xhr) {
             alert(result.message);
@@ -95,4 +107,13 @@ function uploadDataCsv() {
     })
 }
 
+function closeOtherInfo() {
+        if (InforObj.length > 0) {
+            InforObj[0].set("marker", null);
+            /* and close it */
+            InforObj[0].close();
+            /* blank the array */
+            InforObj.length = 0;
+        }
+    }
 window.initMap = initMap;

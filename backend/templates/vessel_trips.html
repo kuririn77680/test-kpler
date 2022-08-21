@@ -53,10 +53,8 @@
             </div>
         </div>
         <div id="upload">
-            <form onSubmit="uploadDataCsv()">
-                <input type="file" accept=".csv" />
-                <input type="submit" value="upload file">
-            </form>
+            <input id="file_upload" type="file" files accept=".csv" />
+            <input type="button" value="upload file" onClick="uploadDataCsv()">
         </div>
     </body>
 </html>

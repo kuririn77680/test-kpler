@@ -1,10 +1,8 @@
 // Initialize and add the map
 function initMap(vessel_id) {
-  const center_map = { lat: 0, lng: 0 };
-  const path = "M-20,0a20,20 0 1,0 40,0a20,20 0 1,0 -40,0";
   const map = new google.maps.Map(document.getElementById("map"), {
     zoom: 1.5,
-    center: center_map,
+    center: { lat: 0, lng: 0 },
   });
 
   if (vessel_id === undefined) {
@@ -80,9 +78,23 @@ function postData() {
 }
 
 function uploadDataCsv() {
-    var upload_csv = document.getElementById("upload_csv").value;
+    var url = "http://127.0.0.1:5000/vessel_positions/upload_vessel_position_csv";
 
+    let csvfile = document.getElementById("file_upload").files[0];
 
+	const formData = new FormData();
+    formData.append("csvfile", csvfile, csvfile.name);
+
+    $.ajax({
+        url: url,
+        type: "POST",
+        data:formData,
+        processData: false,  // tell jQuery not to process the data
+        contentType: false,
+        success: function(result, textStatus, xhr) {
+            alert(result.message);
+        }
+    })
 }
 
 window.initMap = initMap;

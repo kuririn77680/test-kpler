@@ -85,10 +85,10 @@ def upload_csv():
         os.remove(upload_dir + "/" + secure_filename(filename))
 
     if len(valid) <= 0:
-        message = "no data inserted from upoladed file"
+        message = "no data inserted from uploaded file"
         return jsonify({"message": message}), 200
 
-    elif len(failed_line) > 0 and len(existing_entry):
+    elif len(failed_line) > 0 and len(existing_entry) > 0:
         message = "error format data on line: " + str(failed_line) + "\n " \
                                                                      "error already existing entry on line " + str(
             existing_entry)
@@ -102,6 +102,6 @@ def upload_csv():
         message = "error format data on line: " + str(failed_line)
         return jsonify({"message": message}), 201
 
-
     else:
-        return Response(status=201)
+        message = "data added"
+        return jsonify({"message": message}), 201

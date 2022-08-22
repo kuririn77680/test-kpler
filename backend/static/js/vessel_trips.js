@@ -35,6 +35,7 @@ function initMap(vessel_id) {
                     var marker = new google.maps.Marker({
                         position: position,
                         map: map,
+                        draggable: false,
                         data: "Vessel ID: " + String(vessel_positions[vessel_position][vessel_position_entry].vessel_id) +
                         "\n Received time UTC: " + String(vessel_positions[vessel_position][vessel_position_entry].received_time_utc),
                     });
@@ -107,13 +108,4 @@ function uploadDataCsv() {
     })
 }
 
-function closeOtherInfo() {
-        if (InforObj.length > 0) {
-            InforObj[0].set("marker", null);
-            /* and close it */
-            InforObj[0].close();
-            /* blank the array */
-            InforObj.length = 0;
-        }
-    }
 window.initMap = initMap;
